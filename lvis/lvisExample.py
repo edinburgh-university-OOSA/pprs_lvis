@@ -24,9 +24,11 @@ noiseSale=3.5
 thresh=setThreshold(meanNoise,stdevNoise,noiseSale)
 
 # denoise
-sWidth=0.6
+sWidth=0.9
 minWidth=3
 denoised=denoise(waves,z,thresh,sWidth,minWidth)
 
+# find ground
+ground=findGround(denoised,z)
 
 

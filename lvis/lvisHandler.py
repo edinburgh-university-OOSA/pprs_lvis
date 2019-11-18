@@ -166,5 +166,74 @@ def plotWaves(waves,z,lfid,lShot,outRoot="waveforms"):
 
   return
 
+
 ##############################################
+
+def plotGrWaves(waves,z,ground,lfid,lShot,outRoot="waveforms"):
+  '''
+  Plot waveforms with ground marked
+  '''
+
+  # determine array size
+  nWaves=waves.shape[0]
+  nBins=waves.shape[1]
+
+  # loop over waveforms
+  for i in range(0,nWaves):
+    # set a filename based on the LVIS shot IDs
+    filename=outRoot+"."+str(lfid[i])+"."+str(lShot[i])+".png"
+
+    # plot data to file
+    plt.ylabel('DN')
+    plt.xlabel('Elevation (m)')
+    plt.plot(waves[i],z[i])
+    plt.plot([0,np.max(waves[i])], [ground[i],ground[i]], color='r', linestyle='-', linewidth=2)  # ground estimate
+    plt.savefig(filename)
+    plt.close()
+    plt.clf()
+
+    # write progress
+    print("Written to",filename)
+
+  return
+
+
+##############################################
+
+def findGround(waves,z):
+  '''
+  Find ground by inflection points
+  '''
+
+  print("Finding ground")
+
+  # determine array size
+  nWaves=waves.shape[0]
+  nBins=waves.shape[1]
+
+  # make array for answers
+  ground=np.full(nWaves,-999,dtype=float)
+
+  # loop over waveforms
+  for i in range(0,nWaves):
+    # get derivative
+    dxdy=np.gradient(waves[i])
+    d2xdy2=np.gradient(dxdy)
+
+    # determine crossing points
+    inflZ=[]
+    for j in range(0,len(d2xdy2)-1):
+      inflIn=(d2xdy2[j]*d2xdy2[j+1]<-0.0000000000001)
+      if(inflIn==True):
+        inflZ.append(z[i,j])
+
+    # ground is between lowest two
+    if(len(inflZ)>=2):
+      ground[i]=np.float((inflZ[-1]+inflZ[-2])/2.0)
+
+  print("Ground found")
+  return(ground)
+
+##############################################
+
 
