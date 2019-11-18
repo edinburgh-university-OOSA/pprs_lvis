@@ -53,7 +53,7 @@ def readLVIS(filename,nRead=10000,sInd=0):
 
   # make z arrays
   z=np.empty((nRead,nBins))
-  for i in range(0,nBins):
+  for i in range(0,nWaves):
     res=(lZ0[i]-lZN[i])/nBins
     z[i]=np.arange(lZ0[i],lZN[i],-1.0*res)   # returns an array of floats
 
@@ -217,7 +217,7 @@ def findGround(waves,z):
   # loop over waveforms
   for i in range(0,nWaves):
     # get second derivative
-    d2xdy2=np.empty(nWaves,dtype=float)
+    d2xdy2=np.empty(nBins,dtype=float)
     for j in range(1,nBins-1):
       d2xdy2[j]=2.0*waves[i,j]-(waves[i,j+1]+waves[i,j-1]);
 
