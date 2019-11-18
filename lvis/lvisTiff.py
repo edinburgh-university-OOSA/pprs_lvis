@@ -6,6 +6,7 @@ Make geotiffs from LVIS
 
 from pyproj import Proj, transform # package for reprojecting data
 from osgeo import gdal             # pacage for handling geotiff data
+import numpy as np
 
 
 
