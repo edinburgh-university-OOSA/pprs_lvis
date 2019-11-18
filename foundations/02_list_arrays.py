@@ -16,6 +16,11 @@ print(x)
 print(x[0])
 
 
+# we can also count from the back
+print(x[-1])
+print(x[-2])
+
+
 # Note that the elements start from "0" and go, in this case, to 4.
 print(x[0],x[4])
 
@@ -59,6 +64,24 @@ print(x[0],x[2])
 # but now we can perform maths on the whole array
 y=x/2
 print("original",x,"modified",y)
+
+
+
+# SLICES: We can access sections of an array using the slice feature
+x=np.arange((100))  # make an array of 1 to 99
+
+# write of the 4th to 20th elements
+print(x[4:21])
+
+# write out the first ten elements
+print(x[:10])
+
+# write out the last ten elements
+print(x[-10:])
+
+# write out a chosen set of elements
+chosen=[12,15,35,2,80,-4]
+print(x[chosen])
 
 
 # arrays can also be multi-dimensional. Let us make one full of "-1"
