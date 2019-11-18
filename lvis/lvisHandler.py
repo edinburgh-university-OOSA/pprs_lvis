@@ -216,16 +216,14 @@ def findGround(waves,z):
 
   # loop over waveforms
   for i in range(0,nWaves):
-    # get derivative
-    dxdy=np.gradient(waves[i])
-    d2xdy2=np.gradient(dxdy)
-
-    # set a tolerance
-    tol=np.min(d2xdy2)/1000.0
+    # get second derivative
+    d2xdy2=np.empty(nWaves,dtype=float)
+    for j in range(1,nBins-1):
+      d2xdy2[j]=2.0*waves[i,j]-(waves[i,j+1]+waves[i,j-1]);
 
     # determine crossing points
     inflZ=[]
-    for j in range(1,len(d2xdy2)-1):
+    for j in range(1,nBins-1):
       if((d2xdy2[j]<=d2xdy2[j-1])&(d2xdy2[j]<d2xdy2[j+1])&(waves[i,j]>0.0)&(waves[i,j-1]>0.0)&(waves[i,j+1]>0.0)):
         inflZ.append(z[i,j])
 

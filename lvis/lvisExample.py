@@ -31,6 +31,6 @@ denoised=denoise(waves,z,thresh,sWidth,minWidth)
 # find ground
 ground=findGround(denoised,z)
 
-
 # plot
 #plotGrWaves(denoised,z,ground,lfid,lShot)
+
