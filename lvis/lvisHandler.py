@@ -234,6 +234,40 @@ def findGround(waves,z):
   print("Ground found")
   return(ground)
 
+
+##############################################
+
+def findHeight(waves,ground,z):
+  '''
+  Calculate height and canopy cover
+  '''
+
+  # array sizes
+  nWaves=waves.shape[0]
+  nBins=waves.shape[1]
+  res=(z[0,0]-z[0,-1])/nBins
+
+  # create arrays
+  height=np.full(waves.shape[0],-999.0)
+  cov=np.full(waves.shape[0],-999.0)
+
+  # loop over waveforms
+  for i in range(0,nWaves):
+    # find the top
+    topBin=np.min(waves[i,waves[i]>0.0])
+    height[i]=z[i,topBin]-ground[i]
+
+    # total energy
+    totE=np.sum(waves[i])
+
+    # energy under ground
+    gBin=int((z[i,0]-ground[i])/res)
+    grE=np.sum(waves[i,gBin:])
+    cov[i]=(totE-grE)/totE
+
+  return(height,cov)
+
+
 ##############################################
 
 
