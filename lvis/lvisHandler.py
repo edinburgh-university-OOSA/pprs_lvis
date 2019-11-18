@@ -6,7 +6,9 @@ analyse LVIS data
 
 ###################################
 import numpy as np
-import h5py   # package to read HDF5 data
+import matplotlib.pyplot as plt
+import h5py                                          # package to read HDF5 data
+from scipy.ndimage.filters import gaussian_filter1d  # smoothing function
 
 
 ##############################################
@@ -61,7 +63,101 @@ def readLVIS(filename,nRead=10000,sInd=0):
 
 ##############################################
 
+def findStats(waves,z,nWaves,nBins,statsLen=10):
+  '''
+  Finds standard deviation and mean of noise
+  '''
 
+  # make empty arrays
+  meanNoise=np.empty(nWaves)
+  stdevNoise=np.empty(nWaves)
+
+  # determine number of bins to calculate stats over
+  res=(z[0,-1]-z[0,0])/nBins    # range resolution
+  noiseBins=int(statsLen/res)   # number of bins within "statsLen"
+
+  # loop over waveforms
+  for i in range(0,nWaves):
+    meanNoise[i]=np.mean(waves[0:noiseBins])
+    stdevNoise[i]=np.std(waves[0:noiseBins])
+
+  # return results
+  return(meanNoise,stdevNoise)
+
+
+##############################################
+
+def setThreshold(meanNoise,stdevNoise,scale):
+  '''
+  Sets denoising threshold
+  '''
+  thresh=meanNoise+scale*stdevNoise
+  return(thresh)
+
+
+##############################################
+
+def denoise(waves,thresh,sWidth,minWidth):
+  '''
+  Denoise waveform data
+  '''
+
+  # how many waveforms?
+  nWaves=waves.shape[0]  # all numpy arrays have their size saved in .shape
+
+  # make array for output
+  denoised=np.full(waves.shape,0)
+
+  # loop over waves
+  for i in range(0,nWaves):
+    # subtract background noise
+    denoised[i]=waves[i]-thresh[i]
+
+    # set all negative values to zero
+    denoised[i,denoised[i]<0]=0.0
+
+    # minimum acceptable width
+    binList=np.where(denoised[i]>0.0)[0]
+    zeroList=[]
+    for j in range(0,binList.shape[0]):       # loop over waveforms
+      if((j>0)&(j<(binList.shape[0]-1))):    # are we in the middle of the array?
+        if((binList[j]!=binList[j-1]-1)|(binList[j]!=binList[j+1]+1)):  # are the bins consecutive?
+          denoised[i,binList[j]]=0   # if not, set to zero
+
+    # smooth
+    denoised[i]=gaussian_filter1d(denoised[i],sWidth/res)
+
+  return(denoised)
+
+
+##############################################
+
+def plotWaves(waves,z,lfid,lShot,outRoot="waveforms"):
+  '''
+  Plot waveforms
+  '''
+
+  # determine array size
+  nWaves=waves.shape[0]
+  nBins=waves.shape[1]
+
+  # loop over waveforms
+  for i in range(0,nWaves):
+    # set a filename based on the LVIS shot IDs
+    filename=outRoot+"."+str(lfid[i])+"."+str(lShot[i])+".png"
+
+    # plot data to file
+    plt.ylabel('DN')
+    plt.xlabel('Elevation (m)')
+    plt.plot(waves[i],z[i])
+    plt.savefig(filename)
+    plt.close()
+    plt.clf()
+
+    # write progress
+    print("Written to",filename)
+
+  return
 
 ##############################################
 
