@@ -6,6 +6,7 @@ Make geotiffs from LVIS
 
 from pyproj import Proj, transform # package for reprojecting data
 from osgeo import gdal             # pacage for handling geotiff data
+from osgeo import osr              # pacage for handling projection information
 import numpy as np
 
 
@@ -42,7 +43,7 @@ def writeTiff(data,lon,lat,res,epsg=3857,filename="lvis_image.tif"):
   geotransform = (minX, res, 0, maxY, 0, -res)
 
   # load data in to geotiff object
-  dst_ds = gdal.GetDriverByName('GTiff').Create(filename, nY, nX, 1, gdal.GDT_Float32)
+  dst_ds = gdal.GetDriverByName('GTiff').Create(filename, nX, nY, 1, gdal.GDT_Float32)
 
   dst_ds.SetGeoTransform(geotransform)    # specify coords
   srs = osr.SpatialReference()            # establish encoding
