@@ -220,11 +220,13 @@ def findGround(waves,z):
     dxdy=np.gradient(waves[i])
     d2xdy2=np.gradient(dxdy)
 
+    # set a tolerance
+    tol=np.min(d2xdy2)/1000.0
+
     # determine crossing points
     inflZ=[]
-    for j in range(0,len(d2xdy2)-1):
-      inflIn=(d2xdy2[j]*d2xdy2[j+1]<-0.0000000000001)
-      if(inflIn==True):
+    for j in range(1,len(d2xdy2)-1):
+      if((d2xdy2[j]<=d2xdy2[j-1])&(d2xdy2[j]<d2xdy2[j+1])&(waves[i,j]>0.0)&(waves[i,j-1]>0.0)&(waves[i,j+1]>0.0)):
         inflZ.append(z[i,j])
 
     # ground is between lowest two

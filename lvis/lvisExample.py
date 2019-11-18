@@ -20,11 +20,11 @@ waves,lon,lat,nWaves,nBins,z,lfid,lShot=readLVIS(filename)
 meanNoise,stdevNoise=findStats(waves,z)
 
 # set denoising threshold
-noiseSale=3.5
+noiseSale=5
 thresh=setThreshold(meanNoise,stdevNoise,noiseSale)
 
 # denoise
-sWidth=0.9
+sWidth=1.0
 minWidth=3
 denoised=denoise(waves,z,thresh,sWidth,minWidth)
 
@@ -32,3 +32,5 @@ denoised=denoise(waves,z,thresh,sWidth,minWidth)
 ground=findGround(denoised,z)
 
 
+# plot
+#plotGrWaves(denoised,z,ground,lfid,lShot)
