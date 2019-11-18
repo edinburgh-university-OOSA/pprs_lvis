@@ -44,5 +44,6 @@ height,cov=findHeight(denoised,ground,z)
 from lvisTiff import *
 
 # write height geotiff
-writeTiff(height,lon,lat,20.0,epsg=3857,filename="lvis_height.tif")
+res=20.0
+writeTiff(height,lon,lat,res,epsg=3857,filename="lvis_height.tif")
 
