@@ -23,16 +23,16 @@ def appendLVIS(filename,waves,lon,lat,nWaves,nBins,z,lfid,lShot,nRead=1000000,sI
   nwaves,nlon,nlat,nnWaves,nnBins,nz,nlfid,nlShot=readLVIS(filename,nRead=nRead,sInd=sInd)
 
   # append to old arrays
-  waves=np.append(waves,nwaves)
+  waves=np.append(waves,nwaves,axis=0)
   lon=np.append(lon,nlon)
   lat=np.append(lat,nlat)
   nWaves=np.append(nWaves,nnWaves)
   nBins=np.append(nBins,nnBins)
-  z=np.append(z,nz)
+  z=np.append(z,nz,axis=0)
   lfid=np.append(lfid,nlfid)
   lShot=np.append(lShot,nlShot)
 
-  return
+  return(waves,lon,lat,nWaves,nBins,z,lfid,lShot)
 
 
 ##############################################
