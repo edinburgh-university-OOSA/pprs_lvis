@@ -11,6 +11,30 @@ import h5py                                          # package to read HDF5 data
 from scipy.ndimage.filters import gaussian_filter1d  # smoothing function
 
 
+
+##############################################
+
+def appendLVIS(filename,waves,lon,lat,nWaves,nBins,z,lfid,lShot,nRead=10000,sInd=0):
+  '''
+  Append to an LVIS array
+  '''
+
+  # read new data
+  nwaves,nlon,nlat,nnWaves,nnBins,nz,nlfid,nlShot=readLVIS(filename,nRead=nRead,sInd=sInd)
+
+  # append to old arrays
+  waves=np.append(waves,nwaves)
+  lon=np.append(lon,nlon)
+  lat=np.append(lat,nlat)
+  nWaves=np.append(nWaves,nnWaves)
+  nBins=np.append(nBins,nnBins)
+  z=np.append(z,nz)
+  lfid=np.append(lfid,nlfid)
+  lShot=np.append(lShot,nlShot)
+
+  return
+
+
 ##############################################
 
 def readLVIS(filename,nRead=10000,sInd=0):
