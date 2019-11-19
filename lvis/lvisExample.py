@@ -6,16 +6,14 @@ Example of LVIS handler usage
 # tell python where to look for the handler
 import sys
 sys.path.extend(["/home/shancock/wordybits/auldreekie/teaching/pprs/2019/02_intro_programming/src/pprs_lvis/lvis"])
-sys.path.extend(["/Users/dill/teaching/pprs/2019/02_intro_programming/pprs_lvis/lvis"])
 
 
 # import functions
 from lvisHandler import *
 
 # set a filename
-filename="/Users/dill/data/teaching/pprs/oosa/week5_lvis/lvis.200Mbytes/ILVIS1B_GA2016_0220_R1611_045137.3.h5"
 filename='/geos/d71/data/teaching/pprs/data/ILVIS1B_GA2016_0220_R1611_044415.27.h5'
-filename='/geos/d71/data/teaching/pprs/data/lvis.200Mbytes/ILVIS1B_GA2016_0220_R1611_045137.0.h5'
+filename='/home/shancock/data/teaching/pprs/lvis/lgw/LVIS_US_NH_2009_VECT_20100328.subset.h5'
 
 # read data
 waves,lon,lat,nWaves,nBins,z,lfid,lShot=readLVIS(filename)

@@ -14,7 +14,7 @@ from scipy.ndimage.filters import gaussian_filter1d  # smoothing function
 
 ##############################################
 
-def appendLVIS(filename,waves,lon,lat,nWaves,nBins,z,lfid,lShot,nRead=10000,sInd=0):
+def appendLVIS(filename,waves,lon,lat,nWaves,nBins,z,lfid,lShot,nRead=1000000,sInd=0):
   '''
   Append to an LVIS array
   '''
@@ -37,7 +37,7 @@ def appendLVIS(filename,waves,lon,lat,nWaves,nBins,z,lfid,lShot,nRead=10000,sInd
 
 ##############################################
 
-def readLVIS(filename,nRead=10000,sInd=0):
+def readLVIS(filename,nRead=1000000,sInd=0):
   '''
   Read LVIS data from file
   '''
@@ -290,7 +290,6 @@ def findHeight(waves,ground,z):
     gBin=int((z[i,0]-ground[i])/res)
     grE=np.sum(waves[i,gBin:])*2.0
     cov[i]=(totE-grE)/totE
-    print("cov",i,cov[i])
 
   return(height,cov)
 
