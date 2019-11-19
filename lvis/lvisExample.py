@@ -52,6 +52,6 @@ Geotiffs
 from lvisTiff import *
 
 # write height geotiff
-res=20.0
+res=30.0
 writeTiff(height,lon,lat,res,epsg=3857,filename="lvis_height.tif")
 

@@ -263,6 +263,7 @@ def findGround(waves,z,top,bot):
 
   # loop over waveforms
   for i in range(0,nWaves):
+    print("Finding ground, wave",i+1,"of",nWaves)
     # get second derivative
     dydx=np.gradient(waves[i])
     d2ydx2=np.gradient(dydx)

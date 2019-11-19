@@ -36,7 +36,7 @@ def writeTiff(data,lon,lat,res,epsg=3857,filename="lvis_image.tif"):
   # pack in to array
   imageArr=np.full((nY,nX),-999.0)
   xInds=np.array((x-minX)/res,dtype=int)
-  yInds=np.array((y-minY)/res,dtype=int)
+  yInds=np.array((maxY-y)/res,dtype=int)
   imageArr[yInds,xInds]=data
 
   # set geolocation information (note geotiffs count down from top edge in Y)
