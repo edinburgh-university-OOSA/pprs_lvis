@@ -25,20 +25,20 @@ plotWaves(waves,z,lfid,lShot,outRoot="rawWaves"):
 # determine stats
 meanNoise,stdevNoise=findStats(waves,z)
 
-# set denoising threshold
-noiseScale=5
-thresh=setThreshold(meanNoise,stdevNoise,noiseScale)
-
 # denoise
+noiseScale=5
 sWidth=1.0
 minWidth=3
-denoised=denoise(waves,z,thresh,sWidth,minWidth)
+denoised=denoise(waves,z,meanNoise,stdevNoise,noiseScale,sWidth,minWidth)
+
+# determine top and bottom of waveform (RH98 and RH2)
+top,bot=findWaveEnds(denoised,z)
 
 # find ground
-ground=findGround(denoised,z)
+ground=findGround(denoised,z,top,bot)
 
 # find height
-height,cov=findHeight(denoised,ground,z)
+height,cov=findHeight(denoised,ground,z,top,bot)
 
 # plot
 plotGrWaves(denoised,z,ground,lfid,lShot)

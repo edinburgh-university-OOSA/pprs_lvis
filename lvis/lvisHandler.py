@@ -115,17 +115,7 @@ def findStats(waves,z,statsLen=10):
 
 ##############################################
 
-def setThreshold(meanNoise,stdevNoise,scale):
-  '''
-  Sets denoising threshold
-  '''
-  thresh=meanNoise+scale*stdevNoise
-  return(thresh)
-
-
-##############################################
-
-def denoise(waves,z,thresh,sWidth,minWidth):
+def denoise(waves,z,meanNoise,stdevNoise,noiseScale,sWidth,minWidth):
   '''
   Denoise waveform data
   '''
@@ -141,11 +131,15 @@ def denoise(waves,z,thresh,sWidth,minWidth):
   # loop over waves
   for i in range(0,nWaves):
     print("Denoising wave",i+1,"of",nWaves)
-    # subtract background noise
-    denoised[i]=waves[i]-thresh[i]
 
-    # set all negative values to zero
-    denoised[i,denoised[i]<0]=0.0
+    # subtract mean background noise
+    denoised[i]=waves[i]-meanNoise[i]
+
+    # set threshold
+    thresh=noiseScale*stdevNoise[i]
+
+    # set all values less than threshold to zero
+    denoised[i,denoised[i]<thresh]=0.0
 
     # minimum acceptable width
     binList=np.where(denoised[i]>0.0)[0]
@@ -224,7 +218,36 @@ def plotGrWaves(waves,z,ground,lfid,lShot,outRoot="waveforms"):
 
 ##############################################
 
-def findGround(waves,z):
+def findWaveEnds(waves,z):
+  '''
+  Find top and bottom of waveform ends
+  '''
+
+  # set arrays. Initially to be bounds
+  top=np.array(z[:,0])
+  bot=np.array(z[:,-1])
+
+  nWaves=waves.shape[0]
+
+  # loop over bounds
+  for i in range(0,nWaves):
+    # get cumuative distribution for RH metrics
+    cumul=np.cumsum(waves[i])/np.sum(waves[i])
+
+    # find the closest value to 0.5% and 99.5%
+    topInd=np.abs(cumul-0.005).argmin()   # make use of the "numpy.argmin()" method
+    botInd=np.abs(cumul-0.995).argmin()
+
+    # read elevations from z array
+    top[i]=z[i,topInd]
+    bot[i]=z[i,botInd]
+
+  return(top,bot)
+
+
+##############################################
+
+def findGround(waves,z,top,bot):
   '''
   Find ground by inflection points
   '''
@@ -235,25 +258,40 @@ def findGround(waves,z):
   nWaves=waves.shape[0]
   nBins=waves.shape[1]
 
-  # make array for answers
+  # make array for answers, holding missing data value for now
   ground=np.full(nWaves,-999,dtype=float)
 
   # loop over waveforms
   for i in range(0,nWaves):
     # get second derivative
-    d2xdy2=np.empty(nBins,dtype=float)
-    for j in range(1,nBins-1):
-      d2xdy2[j]=2.0*waves[i,j]-(waves[i,j+1]+waves[i,j-1]);
+    dydx=np.gradient(waves[i])
+    d2ydx2=np.gradient(dydx)
 
-    # determine crossing points
-    inflZ=[]
-    for j in range(1,nBins-1):
-      if((d2xdy2[j]<=d2xdy2[j-1])&(d2xdy2[j]<d2xdy2[j+1])&(waves[i,j]>0.0)&(waves[i,j-1]>0.0)&(waves[i,j+1]>0.0)):
-        inflZ.append(z[i,j])
+    # set values beyond top and bottom to zero to avoid the messy stuff on the edge of gaussians
+    topInd=np.abs(z[i]-top[i]).argmin()
+    botInd=np.abs(z[i]-bot[i]).argmin()
+    d2ydx2[0:topInd]=0.0
+    d2ydx2[botInd+1:]=0.0
 
-    # ground is between lowest two
-    if(len(inflZ)>=2):
-      ground[i]=np.float((inflZ[-1]+inflZ[-2])/2.0)
+    # determine minimum inflection at bottom of waveform
+    inFeat=False   # a tracker of if this is the first feature or not
+    CofG=contN=0.0
+    for j in range(nBins-2,1,-1):  # loop from the bottom
+      # look for crossing points of 2nd derivative
+      if((d2ydx2[j]<=d2ydx2[j-1])&(d2ydx2[j]<d2ydx2[j+1])):
+        if(inFeat):
+          break
+        else:
+          inFeat=True
+
+      # keep track of centre of gravity to use as ground estimate
+      if(inFeat):
+        CofG=CofG+waves[i,j]*z[i,j]  # add up centre of gravity
+        contN=contN+waves[i,j]       # keep track of integral
+
+    # ground is centre of gravity
+    if(contN>0.0):
+      ground[i]=CofG/contN
 
   print("Ground found")
   return(ground)
@@ -261,7 +299,7 @@ def findGround(waves,z):
 
 ##############################################
 
-def findHeight(waves,ground,z):
+def findHeight(waves,ground,z,top,bot):
   '''
   Calculate height and canopy cover
   '''
@@ -277,18 +315,19 @@ def findHeight(waves,ground,z):
 
   # loop over waveforms
   for i in range(0,nWaves):
-    # find the top
-    topBin=np.min(waves[i,waves[i]>0.0])
+    # find the top and bottom
+    topInd=np.abs(z[i]-top[i]).argmin()
+    botInd=np.abs(z[i]-bot[i]).argmin()
 
     # height of this above ground
-    height[i]=z[i,topBin]-ground[i]
+    height[i]=z[i,topInd]-ground[i]
 
     # total energy
     totE=np.sum(waves[i])
 
     # energy under ground
     gBin=int((z[i,0]-ground[i])/res)
-    grE=np.sum(waves[i,gBin:])*2.0
+    grE=np.sum(waves[i,gBin:botInd])*2.0  # times two as this is half the energy
     cov[i]=(totE-grE)/totE
 
   return(height,cov)
