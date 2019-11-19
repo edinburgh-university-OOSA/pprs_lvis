@@ -14,7 +14,7 @@ path.extend(["%s/src/pprs_lvis/lvis"%homeDir])
 from lvisHandler import *
 
 # set a filename
-filename='/geos/netdata/avtrain/data/3d/pprs_waveform/lvis/LVIS_US_NH_2009_VECT_20100328.subset.84.h5'
+filename='/geos/netdata/avtrain/data/3d/pprs_waveform/lvis/LVIS_US_NH_2009_VECT_20100328.subset.4.h5'
 
 # read data
 waves,lon,lat,nWaves,nBins,z,lfid,lShot=readLVIS(filename)
@@ -26,7 +26,7 @@ plotWaves(waves,z,lfid,lShot,outRoot="rawWaves"):
 meanNoise,stdevNoise=findStats(waves,z)
 
 # denoise
-noiseScale=5
+noiseScale=3.5
 sWidth=1.0
 minWidth=3
 denoised=denoise(waves,z,meanNoise,stdevNoise,noiseScale,sWidth,minWidth)
