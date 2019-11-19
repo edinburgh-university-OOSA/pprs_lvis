@@ -19,12 +19,15 @@ filename='/geos/netdata/avtrain/data/3d/pprs_waveform/lvis/LVIS_US_NH_2009_VECT_
 # read data
 waves,lon,lat,nWaves,nBins,z,lfid,lShot=readLVIS(filename)
 
+# plot data
+plotWaves(waves,z,lfid,lShot,outRoot="rawWaves"):
+
 # determine stats
 meanNoise,stdevNoise=findStats(waves,z)
 
 # set denoising threshold
-noiseSale=5
-thresh=setThreshold(meanNoise,stdevNoise,noiseSale)
+noiseScale=5
+thresh=setThreshold(meanNoise,stdevNoise,noiseScale)
 
 # denoise
 sWidth=1.0

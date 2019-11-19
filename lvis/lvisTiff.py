@@ -50,6 +50,7 @@ def writeTiff(data,lon,lat,res,epsg=3857,filename="lvis_image.tif"):
   srs.ImportFromEPSG(epsg)                # WGS84 lat/long
   dst_ds.SetProjection(srs.ExportToWkt()) # export coords to file
   dst_ds.GetRasterBand(1).WriteArray(imageArr)  # write image to the raster
+  dst_ds.GetRasterBand(1).SetNoDataValue(-999)  # set no data value
   dst_ds.FlushCache()                     # write to disk
   dst_ds = None
 
