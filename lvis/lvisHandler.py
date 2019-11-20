@@ -172,8 +172,8 @@ def plotWaves(waves,z,lfid,lShot,outRoot="waveforms"):
     filename=outRoot+"."+str(lfid[i])+"."+str(lShot[i])+".png"
 
     # plot data to file
-    plt.ylabel('DN')
-    plt.xlabel('Elevation (m)')
+    plt.xlabel('DN')
+    plt.ylabel('Elevation (m)')
     plt.plot(waves[i],z[i])
     plt.savefig(filename)
     plt.close()
@@ -202,8 +202,8 @@ def plotGrWaves(waves,z,ground,lfid,lShot,outRoot="waveforms"):
     filename=outRoot+"."+str(lfid[i])+"."+str(lShot[i])+".png"
 
     # plot data to file
-    plt.ylabel('DN')
-    plt.xlabel('Elevation (m)')
+    plt.xlabel('DN')
+    plt.ylabel('Elevation (m)')
     plt.plot(waves[i],z[i])
     plt.plot([0,np.max(waves[i])], [ground[i],ground[i]], color='r', linestyle='-', linewidth=2)  # ground estimate
     plt.savefig(filename)
