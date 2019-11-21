@@ -35,6 +35,13 @@ Loops
 # The real power of a computer comes from its ability to perform repetative tasks quickly
 # we can "loop" over a set of tasks, repeating them one by one
 
+# simple loop
+
+for i in range(0,10):
+  print(i)
+
+
+
 # let us read in some data
 
 import numpy as np
@@ -45,6 +52,7 @@ def readData(filename):
   return(x,y)
 
 x,y=readData('practice_data.csv')
+
 
 
 # write out our elements, one by one

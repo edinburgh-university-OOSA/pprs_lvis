@@ -64,7 +64,7 @@ y=sin(x)
 
 
 # we can also rename packages as we import them, eg to save typing
-import nump as np
+import numpy as np
 
 
 # Play with these features until you have the basics.
