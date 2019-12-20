@@ -56,4 +56,6 @@ class2=testClass(10,42)   # this calls __init__ and passes 3 and 4 to be saved a
 class1.multiplyContents()
 class2.multiplyContents()
 
+# we will be using lots of packages that contain classes
+# For example, there is a class to store and manipulate geotiff remote sensing files
 
