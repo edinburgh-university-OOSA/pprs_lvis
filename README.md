@@ -26,7 +26,11 @@ Shows how to plot scatterplots, line graphs and histograms
 
 
 ### 05\_loops\_and\_functions.py
-Introduces the use of functions to make reusable code, loops for performing repetative operations and ifs for making within code decisions.
+Introduces the use of functions to make reusable code, loops for performing repetitive operations and ifs for making within code decisions.
+
+
+### 06\_objects.py
+Introduces object classes for python. Objects are a way to combine different data variables and functions within a single variable, in order to help pass data around and perform operations on that data. This greatly eases the writing and maintaining of large, complex pieces of software.
 
 
 ## LVIS
