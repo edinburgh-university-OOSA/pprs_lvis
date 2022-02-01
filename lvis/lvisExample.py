@@ -14,7 +14,7 @@ path.extend(["%s/src/pprs_lvis/lvis"%homeDir])
 from lvisHandler import *
 
 # set a filename
-filename='/geos/netdata/avtrain/data/3d/pprs_waveform/lvis/LVIS_US_NH_2009_VECT_20100328.subset.4.h5'
+filename='/geos/netdata/oosa/week4/lvis_antarctica/ILVIS1B_AQ2015_1014_R1605_070717.h5'
 
 # read data
 waves,lon,lat,nWaves,nBins,z,lfid,lShot=readLVIS(filename)
